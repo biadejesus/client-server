@@ -4,12 +4,16 @@
 #include <sys/socket.h> // biblioteca que importa as funções do socket
 #include<arpa/inet.h> //sockaddr_in
 #include <pthread.h> // para utilizar o pthread para múltiplas conexões
-
+#include <unistd.h>
+#include <sys/types.h>
+#include <semaphore.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 void *connection_handler(void *);
 
 int main(){
     //criando um socket
-    int socket_descritor, new_socket , c, *new_sock;
+    int socket_descritor, new_socket , c, *new_sock, client_sock;
     struct sockaddr_in server, client; // utiliza para conectar a um servidor remoto em um determinado número de porta. Para fazer isso é preciso de uma porta e um endereço de IP.
 
     // a função socket() cria uma socket e retorna um descritor que pode ser usado em outras funções.
@@ -37,7 +41,7 @@ int main(){
     //Aceita e conexões de entrada
 	puts("Esperando por conexões de entrada\n");
 	c = sizeof(struct sockaddr_in);
-	while( (new_socket = accept(socket_descritor, (struct sockaddr *)client, (socklen_t*)c)) ){
+	while( (client_sock = accept(socket_descritor, (struct sockaddr *)&client, (socklen_t*)&c)) ){
 		puts("Conexão aceita\n");
 		
 		//Resposta para o cliente		
@@ -45,12 +49,13 @@ int main(){
 		new_sock = malloc(1);
 		*new_sock = new_socket;
 		
-		if( pthread_create( sniffer_thread , NULL ,  connection_handler , (void*) new_sock) < 0){
+		if( pthread_create( &sniffer_thread , NULL ,  connection_handler , (void*) new_sock) < 0){
 			perror("Não foi possível criar o socket");
 			return 1;
 		}
 
-		puts("Handle atribuído");
+		//juntar o thread, para que não termine antes do thread
+		printf("Handle atribuído");
 
         if (new_socket < 0){
 		perror("Aceitação falhou");
@@ -62,37 +67,37 @@ int main(){
 
 void *connection_handler(void *socket_descritor){ //fazer a conexão
 
-	//Get the socket descriptor
-	int sock = *(int*)socket_descritor;
-	int read_size;
-	char *message , client_message[2000];
+// 	//Get the socket descriptor
+// 	int sock = *(int*)socket_descritor;
+// 	int read_size;
+// 	char *message , client_message[2000];
 	
-	//Send some messages to the client
-	message = &quot;Greetings! I am your connection handler\n&quot;;
-	write(sock , message , strlen(message));
+// 	//Send some messages to the client
+// 	message = &quot;Greetings! I am your connection handler\n&quot;;
+// 	write(sock , message , strlen(message));
 	
-	message = &quot;Now type something and i shall repeat what you type \n&quot;;
-	write(sock , message , strlen(message));
+// 	message = &quot;Now type something and i shall repeat what you type \n&quot;;
+// 	write(sock , message , strlen(message));
 	
-	//Receive a message from client
-	while( (read_size = recv(sock , client_message , 2000 , 0)) &gt; 0 )
-	{
-		//Send the message back to client
-		write(sock , client_message , strlen(client_message));
-	}
+// 	//Receive a message from client
+// 	while( (read_size = recv(sock , client_message , 2000 , 0)) &gt; 0 )
+// 	{
+// 		//Send the message back to client
+// 		write(sock , client_message , strlen(client_message));
+// 	}
 	
-	if(read_size == 0)
-	{
-		puts(&quot;Client disconnected&quot;);
-		fflush(stdout);
-	}
-	else if(read_size == -1)
-	{
-		perror(&quot;recv failed&quot;);
-	}
+// 	if(read_size == 0)
+// 	{
+// 		puts(&quot;Client disconnected&quot;);
+// 		fflush(stdout);
+// 	}
+// 	else if(read_size == -1)
+// 	{
+// 		perror(&quot;recv failed&quot;);
+// 	}
 		
-	//Free the socket pointer
-	free(socket_desc);
+// 	//Free the socket pointer
+// 	free(socket_desc);
 	
-	return 0;
+// 	return 0;
 }
