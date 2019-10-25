@@ -4,21 +4,19 @@
 #include <sys/socket.h> // biblioteca que importa as funções do socket
 #include<arpa/inet.h> //sockaddr_in
 #include <pthread.h> // para utilizar o pthread para múltiplas conexões
-#include <unistd.h>
-#include <sys/types.h>
-#include <semaphore.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-void *connection_handler(void *);
+
+#define true 1
+#define false 0
 
 int main(){
     //criando um socket
-    int socket_descritor, new_socket , c, *new_sock, client_sock;
+    int socket_desc, c,  client_sock;
     struct sockaddr_in server, client; // utiliza para conectar a um servidor remoto em um determinado número de porta. Para fazer isso é preciso de uma porta e um endereço de IP.
+	pid_t process_id;
 
     // a função socket() cria uma socket e retorna um descritor que pode ser usado em outras funções.
-    socket_descritor = socket(AF_INET, SOCK_STREAM, 0); //AF_INET( IP versãon 4) = tipo de endereços, SOCK_STREAM = tipo (isso significa protocolo TCP orientado a conexão), Protocolo - 0 [ ou IPPROTO_IP é o IP protocolo]
-    if (socket_descritor == -1){
+    socket_desc = socket(AF_INET, SOCK_STREAM, 0); //AF_INET( IP versãon 4) = tipo de endereços, SOCK_STREAM = tipo (isso significa protocolo TCP orientado a conexão), Protocolo - 0 [ ou IPPROTO_IP é o IP protocolo]
+    if (socket_desc == -1){
         printf("Nao foi possivel criar o socket\n");
     }
     puts("Socket criado\n");
@@ -28,7 +26,7 @@ int main(){
 	server.sin_family = AF_INET;
 	server.sin_port = htons(8585); // porta aleatória
 
-    if (bind(socket_descritor , (struct sockaddr *)&server , sizeof(server)) < 0){ // bind coloca o socket no lugar reservado para ele 
+    if (bind(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0){ // bind coloca o socket no lugar reservado para ele 
 		puts("Erro na conexão!");
 		return 1;
 	}
@@ -36,68 +34,24 @@ int main(){
 	puts("conectado\n");
 
     //Listen
-	listen(socket_descritor , 3); // colocar os sockets em listening mode
+	listen(socket_desc , 3); // colocar os sockets em listening mode
 
     //Aceita e conexões de entrada
 	puts("Esperando por conexões de entrada\n");
 	c = sizeof(struct sockaddr_in);
-	while( (client_sock = accept(socket_descritor, (struct sockaddr *)&client, (socklen_t*)&c)) ){
+	while( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) ){
+		process_id = fork(); //fork é utilizado para lidar com as várias requisições que podem ocorrer ao mesmo tempo
+		
+		if(process_id < 0){
+			perror("Não foi possível estabelecer uma conexão!!");
+			return false;
+		}
+		else{
+			
+		}
+		
 		puts("Conexão aceita\n");
 		
-		//Resposta para o cliente		
-		pthread_t sniffer_thread; // faz o threading
-		new_sock = malloc(1);
-		*new_sock = new_socket;
-		
-		if( pthread_create( &sniffer_thread , NULL ,  connection_handler , (void*) new_sock) < 0){
-			perror("Não foi possível criar o socket");
-			return 1;
-		}
-
-		//juntar o thread, para que não termine antes do thread
-		printf("Handle atribuído");
-
-        if (new_socket < 0){
-		perror("Aceitação falhou");
-		return 1;
-	    }
 	}
 
-}
-
-void *connection_handler(void *socket_descritor){ //fazer a conexão
-
-// 	//Get the socket descriptor
-// 	int sock = *(int*)socket_descritor;
-// 	int read_size;
-// 	char *message , client_message[2000];
-	
-// 	//Send some messages to the client
-// 	message = &quot;Greetings! I am your connection handler\n&quot;;
-// 	write(sock , message , strlen(message));
-	
-// 	message = &quot;Now type something and i shall repeat what you type \n&quot;;
-// 	write(sock , message , strlen(message));
-	
-// 	//Receive a message from client
-// 	while( (read_size = recv(sock , client_message , 2000 , 0)) &gt; 0 )
-// 	{
-// 		//Send the message back to client
-// 		write(sock , client_message , strlen(client_message));
-// 	}
-	
-// 	if(read_size == 0)
-// 	{
-// 		puts(&quot;Client disconnected&quot;);
-// 		fflush(stdout);
-// 	}
-// 	else if(read_size == -1)
-// 	{
-// 		perror(&quot;recv failed&quot;);
-// 	}
-		
-// 	//Free the socket pointer
-// 	free(socket_desc);
-	
-// 	return 0;
 }
