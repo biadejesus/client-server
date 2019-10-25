@@ -1,2 +1,5 @@
+CXX=gcc
+
 all:
-	$(CXX) client.c proxy.c server.c
+	$(CXX) client.c -o client.out 
+	$(CXX) server.c -o server.out 
