@@ -56,7 +56,9 @@ int main()
         printf("\n1- Cadastrar um animal do tipo cachorro");
         printf("\n2- Cadastrar um animal do tipo gato");
         printf("\n3- Cadastrar um animal do tipo passaro");
-        printf("\n4- Buscar um animal");
+        printf("\n4- Buscar um cachorro");
+        printf("\n5- Buscar um gato");
+        printf("\n6- Buscar um passaro");
         printf("\n0- Sair\n");
         scanf("%d", &acao);
 
@@ -158,8 +160,9 @@ int main()
 
                 break;
 
+
             case 4:
-                printf("\nInsira o nome do animal: ");
+                printf("\nInsira o nome do cachorro a ser buscado: ");
                 scanf("%s", dados.nome);
                 requi.flag=2;
 
@@ -182,6 +185,53 @@ int main()
                 //     printf("\nErro ao ler do socket");
                 // }
 
+            case 5:
+                printf("\nInsira o nome do gato a ser buscado: ");
+                scanf("%s", dados.nome);
+                requi.flag=2;
+
+                // if( send(sock, &dados.idade , strlen(dados.idade) , 0) < 0) //enviar dados pelo socket
+                // {
+                //     perror("\nErro: falha ao enviar dados");
+                //     return 1;
+                // }
+
+                // m = write(sock,dados.nome,strlen(dados.tipo));//escrever
+                // if (m < 0)
+                // {
+                //     printf("\nErro ao escrever no socket");
+                // }
+
+                // m = read(sock,dados.nome,1024); //ler
+
+                // if (m < 0)
+                // {
+                //     printf("\nErro ao ler do socket");
+                // }
+
+            case 6:
+                printf("\nInsira o nome do passaro a ser buscado: ");
+                scanf("%s", dados.nome);
+                requi.flag=2;
+
+                // if( send(sock, &dados.idade , strlen(dados.idade) , 0) < 0) //enviar dados pelo socket
+                // {
+                //     perror("\nErro: falha ao enviar dados");
+                //     return 1;
+                // }
+
+                // m = write(sock,dados.nome,strlen(dados.tipo));//escrever
+                // if (m < 0)
+                // {
+                //     printf("\nErro ao escrever no socket");
+                // }
+
+                // m = read(sock,dados.nome,1024); //ler
+
+                // if (m < 0)
+                // {
+                //     printf("\nErro ao ler do socket");
+                // }
             default:
                 break;
         }
