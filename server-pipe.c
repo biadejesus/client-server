@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/types.h>
-#include<unistd.h>
+#include <unistd.h>
 #include <sys/socket.h> // biblioteca que importa as funções do socket
 #include<arpa/inet.h> //sockaddr_in
 //#include <fcntl.h>
@@ -69,9 +69,8 @@ int main(){
 	c = sizeof(struct sockaddr_in);
 
 	//pipe
-	if (pipe(pipe_) < 0)
-    {
-        perror("Falha ao criar pipe.\n");
+	if (pipe(pipe_) < 0){ //é usado para passar informações de um processo para outro
+        perror("Falha ao criar o pipe.\n");
     }
 
 	write(pipe_[1], &BD, sizeof(BD));
