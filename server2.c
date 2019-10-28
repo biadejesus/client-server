@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <sys/socket.h> // biblioteca que importa as funções do socket
 #include<arpa/inet.h> //sockaddr_in
-#include <pthread.h> // para utilizar o pthread para múltiplas conexões
+//#include <fcntl.h>
 
 #define true 1
 #define false 0
@@ -61,6 +61,7 @@ int main(){
 			return false;
 		}
 		else{
+			puts("a conexão foi estabelecida!");
 			
 		}
 		read(client_sock,&requi,sizeof(requi));
@@ -69,7 +70,7 @@ int main(){
 		if( send(client_sock, &requi , sizeof(requi) , 0) < 0) //enviar dados pelo socket
                 {
                     perror("\nErro: falha ao enviar dados");
-                    return 1;
+                    return true;
                 }
 		
 		
