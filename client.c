@@ -16,6 +16,7 @@ typedef struct{
     char porte[30];
     int idade;
     char nome[30];
+    int id;
 }info;
 
 typedef struct{
@@ -72,6 +73,7 @@ int main()
                 scanf("%s", dados.porte);
                 printf("\nInsira a idade do animal: ");
                 scanf("%d", &dados.idade);
+                dados.id++;
                 requi.flag = 1;
                 requi.informacao = dados;
 
@@ -80,12 +82,6 @@ int main()
                     perror("\nErro: falha ao enviar dados");
                     return 1;
                 }
-
-                // m = write(sock,dados.tipo,strlen(dados.tipo));//escrever
-                // if (m < 0)
-                // {
-                //     printf("\nErro ao escrever no socket");
-                // }
 
                 m = read(sock, &requi, sizeof(requi)); //ler
                 printf("\n%s", requi.resposta);
@@ -162,8 +158,8 @@ int main()
 
 
             case 4:
-                printf("\nInsira o nome do cachorro a ser buscado: ");
-                scanf("%s", dados.nome);
+                printf("\nInsira o id do cachorro a ser buscado: ");
+                scanf("%d", requi.informacao.id);
                 requi.flag=2;
 
                 // if( send(sock, &dados.idade , strlen(dados.idade) , 0) < 0) //enviar dados pelo socket
@@ -172,11 +168,6 @@ int main()
                 //     return 1;
                 // }
 
-                // m = write(sock,dados.nome,strlen(dados.tipo));//escrever
-                // if (m < 0)
-                // {
-                //     printf("\nErro ao escrever no socket");
-                // }
 
                 // m = read(sock,dados.nome,1024); //ler
 
