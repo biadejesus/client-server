@@ -15,7 +15,6 @@ typedef struct{
 }info;
 
 typedef struct{
-    int tipo;
     info informacao;
     int flag;
     char resposta[30];

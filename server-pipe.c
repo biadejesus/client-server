@@ -19,7 +19,6 @@ typedef struct{
 }info;
 
 typedef struct{
-	int tipo;
     info informacao;
     int flag;
 	char resposta[30];
@@ -75,9 +74,12 @@ int main(){
 
 	write(pipe_[1], &BD, sizeof(BD));
 
+	printf("\nANTES WHILE....\n");
+
 	while( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) ){
 		// process_id = fork(); //fork é utilizado para lidar com as várias requisições que podem ocorrer ao mesmo tempo
-		
+		printf("\nCONNECTION ACCEPTED\n");
+
 		if(process_id < 0){
 			perror("Não foi possível estabelecer uma conexão!!");
 			return false;
@@ -87,19 +89,25 @@ int main(){
 			read(pipe_[0], &BD, sizeof(BD));
 
 			if(read(client_sock,&requi,sizeof(requi)) >= 0){
-			printf("\n%d", requi.flag);
-			strcpy(requi.resposta, "deu bom" );
 
-			switch (requi.tipo){
+
+			switch (requi.flag){
                 case post:
+					printf("\nENTROU POST\n");
 					inicializarBD(BD);
 					for(int i=0; i<TAM; i++){
-						if(BD[i].ID != -1){
-							strcpy(BD[requi.informacao.ID].nome , requi.informacao.nome);
-							BD[requi.informacao.ID].ID = requi.informacao.ID;
-							BD[requi.informacao.ID].idade = requi.informacao.idade;
-							strcpy(BD[requi.informacao.ID].tipo , requi.informacao.tipo);
+						if(BD[i].ID == -1){
+							printf("\nENTROU IF BD\n");
+							strcpy(BD[i].nome , requi.informacao.nome);
+							BD[i].ID = requi.informacao.ID;
+							BD[i].idade = requi.informacao.idade;
+							strcpy(BD[i].tipo, requi.informacao.tipo);
 							animal = BD[i];
+							printf("\nFLAG: %d", requi.flag);
+							printf("\nRESPOSTA: %s", requi.resposta);
+							strcpy(requi.resposta, "deu bom");
+							printf("\nRESPOSTA: %s", requi.resposta);
+							send(client_sock, &requi , sizeof(requi) , 0);
 							break;
 						}
 					}
