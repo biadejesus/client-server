@@ -103,7 +103,7 @@ int main(){
     memcpy(MC_animal, &BD, sizeof(info));
 
 	while( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) ){
-		// process_id = fork(); //fork é utilizado para lidar com as várias requisições que podem ocorrer ao mesmo tempo
+		process_id = fork(); //fork é utilizado para lidar com as várias requisições que podem ocorrer ao mesmo tempo
 		
 		if(process_id < 0){
 			perror("Não foi possível estabelecer uma conexão!!");
@@ -115,43 +115,44 @@ int main(){
 			sem_wait(&semaphore);
             memcpy(&BD, MC_animal, sizeof(info)); //leio da memoria compartilhada para o banco de dados
             sem_post(&semaphore);
-
-			if(read(client_sock,&requi,sizeof(requi)) >= 0){
-			printf("\n%d", requi.flag);
-			strcpy(requi.resposta, "deu bom" );
-
-				switch (requi.flag){
-					case post:
-						inicializarBD(BD);
-						for(int i=0; i<TAM; i++){
-							if(BD[i].ID != -1){
-								strcpy(BD[i].nome , requi.informacao.nome);
-								BD[i].ID = requi.informacao.ID;
-								BD[i].idade = requi.informacao.idade;
-								strcpy(BD[i].tipo , requi.informacao.tipo);
-								animal = BD[i];
-								break;
-							}
-						}
-						
-						puts("\nPost:\n");
-						printf("\tNome: %s\n", requi.informacao.nome);
-						printf("\tID: %d\n", requi.informacao.ID);
-						printf("\tIdade: %d\n", requi.informacao.idade);
-						printf("\tTipo: %s\n", requi.informacao.tipo);
-						break;
-
-					case get:
-						animal = requi.informacao;
-						printf("\nGet\n");
-						printf("\tID: %d\n", requi.informacao.ID);
-						break;
-					}
-
-					write(socket_final, &animal, sizeof(info));
-					write(pipe_[1], &BD, sizeof(BD));
-            }
 		}
+
+		if(read(client_sock,&requi,sizeof(requi)) >= 0){
+		printf("\n%d", requi.flag);
+		strcpy(requi.resposta, "deu bom" );
+
+			switch (requi.flag){
+				case post:
+					inicializarBD(BD);
+					for(int i=0; i<TAM; i++){
+						if(BD[i].ID != -1){
+							strcpy(BD[i].nome , requi.informacao.nome);
+							BD[i].ID = requi.informacao.ID;
+							BD[i].idade = requi.informacao.idade;
+							strcpy(BD[i].tipo , requi.informacao.tipo);
+							animal = BD[i];
+							break;
+						}
+					}
+					
+					puts("\nPost:\n");
+					printf("\tNome: %s\n", requi.informacao.nome);
+					printf("\tID: %d\n", requi.informacao.ID);
+					printf("\tIdade: %d\n", requi.informacao.idade);
+					printf("\tTipo: %s\n", requi.informacao.tipo);
+					break;
+
+				case get:
+					animal = requi.informacao;
+					printf("\nGet\n");
+					printf("\tID: %d\n", requi.informacao.ID);
+					break;
+				}
+
+				write(socket_final, &animal, sizeof(info));
+				write(pipe_[1], &BD, sizeof(BD));
+        }
+
 		else{
 			perror("Leitura da requisição falhou.\n");
 		}

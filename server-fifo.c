@@ -90,11 +90,12 @@ int main(){
 		else if(process_id == 0){
 			puts("a conexão foi estabelecida!");
 			read(fifo, &BD, sizeof(BD));
+		}
 
-			if(read(client_sock,&requi,sizeof(requi)) >= 0){
+		if(read(client_sock,&requi,sizeof(requi)) >= 0){
 
 			switch (requi.flag){
-                case post:
+				case post:
 				printf("\nENTROU POST\n");
 					inicializarBD(BD);
 					for(int i=0; i<TAM; i++){
@@ -113,25 +114,25 @@ int main(){
 							break;
 						}
 					}
-                    
+					
 					puts("\nPost:\n");
-                    printf("\tNome: %s\n", requi.informacao.nome);
-                    printf("\tID: %d\n", requi.informacao.ID);
-                    printf("\tIdade: %d\n", requi.informacao.idade);
-                    printf("\tTipo: %s\n", requi.informacao.tipo);
-                    break;
+					printf("\tNome: %s\n", requi.informacao.nome);
+					printf("\tID: %d\n", requi.informacao.ID);
+					printf("\tIdade: %d\n", requi.informacao.idade);
+					printf("\tTipo: %s\n", requi.informacao.tipo);
+					break;
 
-                case get:
-                    animal = requi.informacao;
-                    printf("\nGet\n");
-                    printf("\tID: %d\n", requi.informacao.ID);
-                    break;
-                }
+				case get:
+					animal = requi.informacao;
+					printf("\nGet\n");
+					printf("\tID: %d\n", requi.informacao.ID);
+					break;
+				}
 
-                write(socket_final, &animal, sizeof(info));
-                write(fifo, &BD, sizeof(BD));
-            }
-		}
+			write(socket_final, &animal, sizeof(info));
+			write(fifo, &BD, sizeof(BD));
+        }
+
 		else{
 			perror("Leitura da requisição falhou.\n");
             // write(socket_final, "REQ_FAILED", 11);
