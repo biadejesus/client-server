@@ -39,6 +39,7 @@ int main(){
     int socket_desc, c,  client_sock, socket_final, fifo;
 	requisicao requi;
 	info BD[TAM], animal;
+	inicializarBD(BD);
 
     struct sockaddr_in server, client; // utiliza para conectar a um servidor remoto em um determinado número de porta. Para fazer isso é preciso de uma porta e um endereço de IP.
 	pid_t process_id;
@@ -87,7 +88,7 @@ int main(){
 			perror("Não foi possível estabelecer uma conexão!!");
 			return false;
 		}
-		else if(process_id == 0){
+		if(process_id == 0){
 			puts("a conexão foi estabelecida!");
 			read(fifo, &BD, sizeof(BD));
 
@@ -96,7 +97,7 @@ int main(){
 			switch (requi.flag){
                 case post:
 				printf("\nENTROU POST\n");
-					inicializarBD(BD);
+
 					for(int i=0; i<TAM; i++){
 						if(BD[i].ID == -1){
 							printf("\nENTROU IF BD\n");
@@ -122,19 +123,26 @@ int main(){
                     break;
 
                 case get:
-                    animal = requi.informacao;
                     printf("\nGet\n");
-                    printf("\tID: %d\n", requi.informacao.ID);
-                    break;
+						printf("\tID: %d\n", requi.informacao.ID);
+						for(int i=0; i<TAM; i++){
+							if(BD[i].ID == requi.informacao.ID){
+								animal = BD[i];
+								write(client_sock, &animal, sizeof(animal));
+								break;
+							}
+						}
+						//procurar no bd e retornar a struct com esse id e dar um write
+						break;
                 }
 
                 write(socket_final, &animal, sizeof(info));
                 write(fifo, &BD, sizeof(BD));
             }
-		}
 		else{
 			perror("Leitura da requisição falhou.\n");
             // write(socket_final, "REQ_FAILED", 11);
+		}
 		}
 	}
 	if(socket_final < 0)

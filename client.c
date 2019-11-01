@@ -31,26 +31,32 @@ int main()
     info dados;
     requisicao requi;
 
+    
+
+    proxy.sin_addr.s_addr = inet_addr("127.0.0.1"); //endereço
+    proxy.sin_family = AF_INET;                     //ipv4
+    proxy.sin_port = htons(8585);                   //htons converte o numero da porta em bytes pra internet.
+
+    
+
+    printf("\n-------Sistema de cadastro de animais MiAudota-------\n");
+
+    do{
+
+     sock = socket(AF_INET, SOCK_STREAM, 0); //dominio: ipv4, tipo de comunicação, protocolo.
+
     if (sock < 0) //criando o socket
     {
         perror("/nErro: não foi possível criar o socket");
     }
     printf("\nsocket criado\n");
 
-    proxy.sin_addr.s_addr = inet_addr("127.0.0.1"); //endereço
-    proxy.sin_family = AF_INET;                     //ipv4
-    proxy.sin_port = htons(8585);                   //htons converte o numero da porta em bytes pra internet.
-
-    if (connect(sock, (struct sockaddr *)&proxy, sizeof(proxy)) < 0) //realizando conexão
+        if (connect(sock, (struct sockaddr *)&proxy, sizeof(proxy)) < 0) //realizando conexão
     {
         perror("\nErro: Conexão falhou!\n");
         return 1;
     }
     printf("\nsocket conectado\n");
-
-    printf("\n-------Sistema de cadastro de animais MiAudota-------\n");
-
-    do{
 
         printf("\nEscolha uma opção:");
         printf("\n1- Cadastrar um animal do tipo cachorro");
@@ -65,7 +71,6 @@ int main()
         switch (acao)
         {
             case 1:
-                dados.tipo == "cachorro";
                 printf("\nInsira o nome do animal: ");
                 scanf("%s", dados.nome);
                 printf("\nInsira a idade do animal: ");
@@ -77,7 +82,7 @@ int main()
                 printf("\nFLAG: %d\n", requi.flag);
                 strcpy(requi.informacao.nome , dados.nome);
                 requi.informacao.idade = dados.idade;
-                strcpy(requi.informacao.tipo , dados.tipo);
+                strcpy(requi.informacao.tipo , "cachorro");
                 printf("\nenviando dados\n");
 
                 if( send(sock, &requi , sizeof(requi) , 0) < 0) //enviar dados pelo socket

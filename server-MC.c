@@ -5,7 +5,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/socket.h> // biblioteca que importa as funções do socket
-#include<arpa/inet.h> //sockaddr_in
+#include <arpa/inet.h> //sockaddr_in
 #include <pthread.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
@@ -44,6 +44,7 @@ int main(){
     int socket_desc, c,  client_sock, pipe_[2], socket_final;
 	requisicao requi;
 	info BD[TAM], animal;
+	inicializarBD(BD);
 
     struct sockaddr_in server, client; // utiliza para conectar a um servidor remoto em um determinado número de porta. Para fazer isso é preciso de uma porta e um endereço de IP.
 	pid_t process_id;
@@ -109,7 +110,7 @@ int main(){
 			perror("Não foi possível estabelecer uma conexão!!");
 			return false;
 		}
-		else if(process_id == 0){
+		if(process_id == 0){
 			puts("a conexão foi estabelecida!");
 			
 			sem_wait(&semaphore);
@@ -122,7 +123,6 @@ int main(){
 
 				switch (requi.flag){
 					case post:
-						inicializarBD(BD);
 						for(int i=0; i<TAM; i++){
 							if(BD[i].ID != -1){
 								strcpy(BD[i].nome , requi.informacao.nome);
@@ -142,16 +142,23 @@ int main(){
 						break;
 
 					case get:
-						animal = requi.informacao;
 						printf("\nGet\n");
 						printf("\tID: %d\n", requi.informacao.ID);
+						for(int i=0; i<TAM; i++){
+							if(BD[i].ID == requi.informacao.ID){
+								animal = BD[i];
+								write(client_sock, &animal, sizeof(animal));
+								break;
+							}
+						}
+						//procurar no bd e retornar a struct com esse id e dar um write
 						break;
 					}
 
 					write(socket_final, &animal, sizeof(info));
 					write(pipe_[1], &BD, sizeof(BD));
             }
-		}
+		
 		else{
 			perror("Leitura da requisição falhou.\n");
 		}
@@ -159,7 +166,7 @@ int main(){
 		sem_wait(&semaphore);
         memcpy(MC_animal, &BD, sizeof(info)); //escreve o do banco de dados para a memória compartilhada
         sem_post(&semaphore);
-
+		}
 	}
 	if(socket_final < 0)
 		puts("\n\nFalha na requisição!\n");	
