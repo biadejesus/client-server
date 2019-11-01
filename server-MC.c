@@ -92,6 +92,7 @@ int main(){
         exit(EXIT_FAILURE);
     }
 
+	//semaforo gerencia as multiplas conexões
     if (sem_init(&semaphore, PSHARED, 1) < 0) {
         perror("Erro na inicialização do semáforo!");
         exit(EXIT_FAILURE);
@@ -110,47 +111,55 @@ int main(){
 		}
 		else if(process_id == 0){
 			puts("a conexão foi estabelecida!");
-			read(pipe_[0], &BD, sizeof(BD));
+			
+			sem_wait(&semaphore);
+            memcpy(&BD, MC_animal, sizeof(info)); //leio da memoria compartilhada para o banco de dados
+            sem_post(&semaphore);
 
 			if(read(client_sock,&requi,sizeof(requi)) >= 0){
 			printf("\n%d", requi.flag);
 			strcpy(requi.resposta, "deu bom" );
 
-			switch (requi.flag){
-                case post:
-					inicializarBD(BD);
-					for(int i=0; i<TAM; i++){
-						if(BD[i].ID != -1){
-							strcpy(BD[i].nome , requi.informacao.nome);
-							BD[i].ID = requi.informacao.ID;
-							BD[i].idade = requi.informacao.idade;
-							strcpy(BD[i].tipo , requi.informacao.tipo);
-							animal = BD[i];
-							break;
+				switch (requi.flag){
+					case post:
+						inicializarBD(BD);
+						for(int i=0; i<TAM; i++){
+							if(BD[i].ID != -1){
+								strcpy(BD[i].nome , requi.informacao.nome);
+								BD[i].ID = requi.informacao.ID;
+								BD[i].idade = requi.informacao.idade;
+								strcpy(BD[i].tipo , requi.informacao.tipo);
+								animal = BD[i];
+								break;
+							}
 						}
+						
+						puts("\nPost:\n");
+						printf("\tNome: %s\n", requi.informacao.nome);
+						printf("\tID: %d\n", requi.informacao.ID);
+						printf("\tIdade: %d\n", requi.informacao.idade);
+						printf("\tTipo: %s\n", requi.informacao.tipo);
+						break;
+
+					case get:
+						animal = requi.informacao;
+						printf("\nGet\n");
+						printf("\tID: %d\n", requi.informacao.ID);
+						break;
 					}
-                    
-					puts("\nPost:\n");
-                    printf("\tNome: %s\n", requi.informacao.nome);
-                    printf("\tID: %d\n", requi.informacao.ID);
-                    printf("\tIdade: %d\n", requi.informacao.idade);
-                    printf("\tTipo: %s\n", requi.informacao.tipo);
-                    break;
 
-                case get:
-                    animal = requi.informacao;
-                    printf("\nGet\n");
-                    printf("\tID: %d\n", requi.informacao.ID);
-                    break;
-                }
-
-                write(socket_final, &animal, sizeof(info));
-                write(pipe_[1], &BD, sizeof(BD));
+					write(socket_final, &animal, sizeof(info));
+					write(pipe_[1], &BD, sizeof(BD));
             }
 		}
 		else{
 			perror("Leitura da requisição falhou.\n");
 		}
+
+		sem_wait(&semaphore);
+        memcpy(MC_animal, &BD, sizeof(info)); //escreve o do banco de dados para a memória compartilhada
+        sem_post(&semaphore);
+
 	}
 	if(socket_final < 0)
 		puts("\n\nFalha na requisição!\n");	
