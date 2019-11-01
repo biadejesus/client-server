@@ -6,7 +6,10 @@
 #include <unistd.h>
 #include <sys/socket.h> // biblioteca que importa as funções do socket
 #include<arpa/inet.h> //sockaddr_in
-//#include <fcntl.h>
+#include <pthread.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <semaphore.h>
 
 #define post 1
 #define get 2
@@ -31,6 +34,10 @@ void inicializarBD(info BD[]){
 	}
 
 }
+
+#define PSHARED 1
+
+sem_t semaphore;
 
 int main(){
     //criando um socket
@@ -67,19 +74,9 @@ int main(){
 	puts("Esperando por conexões de entrada\n");
 	c = sizeof(struct sockaddr_in);
 
-	//pipe
-	if (pipe(pipe_) < 0){ //é usado para passar informações de um processo para outro
-        perror("Falha ao criar o pipe.\n");
-    }
-
-	write(pipe_[1], &BD, sizeof(BD));
-
-	printf("\nANTES WHILE....\n");
-
 	while( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) ){
 		// process_id = fork(); //fork é utilizado para lidar com as várias requisições que podem ocorrer ao mesmo tempo
-		printf("\nCONNECTION ACCEPTED\n");
-
+		
 		if(process_id < 0){
 			perror("Não foi possível estabelecer uma conexão!!");
 			return false;
@@ -89,24 +86,19 @@ int main(){
 			read(pipe_[0], &BD, sizeof(BD));
 
 			if(read(client_sock,&requi,sizeof(requi)) >= 0){
+			printf("\n%d", requi.flag);
+			strcpy(requi.resposta, "deu bom" );
 
 			switch (requi.flag){
                 case post:
-					printf("\nENTROU POST\n");
 					inicializarBD(BD);
 					for(int i=0; i<TAM; i++){
-						if(BD[i].ID == -1){
-							printf("\nENTROU IF BD\n");
+						if(BD[i].ID != -1){
 							strcpy(BD[i].nome , requi.informacao.nome);
 							BD[i].ID = requi.informacao.ID;
 							BD[i].idade = requi.informacao.idade;
-							strcpy(BD[i].tipo, requi.informacao.tipo);
+							strcpy(BD[i].tipo , requi.informacao.tipo);
 							animal = BD[i];
-							printf("\nFLAG: %d", requi.flag);
-							printf("\nRESPOSTA: %s", requi.resposta);
-							strcpy(requi.resposta, "deu bom");
-							printf("\nRESPOSTA: %s", requi.resposta);
-							send(client_sock, &requi , sizeof(requi) , 0);
 							break;
 						}
 					}

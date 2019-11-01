@@ -19,7 +19,6 @@ typedef struct{
 }info;
 
 typedef struct{
-	int tipo;
     info informacao;
     int flag;
 	char resposta[30];
@@ -92,15 +91,15 @@ int main(){
 			printf("\n%d", requi.flag);
 			strcpy(requi.resposta, "deu bom" );
 
-			switch (requi.tipo){
+			switch (requi.flag){
                 case post:
 					inicializarBD(BD);
 					for(int i=0; i<TAM; i++){
 						if(BD[i].ID != -1){
-							strcpy(BD[requi.informacao.ID].nome , requi.informacao.nome);
-							BD[requi.informacao.ID].ID = requi.informacao.ID;
-							BD[requi.informacao.ID].idade = requi.informacao.idade;
-							strcpy(BD[requi.informacao.ID].tipo , requi.informacao.tipo);
+							strcpy(BD[i].nome , requi.informacao.nome);
+							BD[i].ID = requi.informacao.ID;
+							BD[i].idade = requi.informacao.idade;
+							strcpy(BD[i].tipo , requi.informacao.tipo);
 							animal = BD[i];
 							break;
 						}
@@ -108,9 +107,9 @@ int main(){
                     
 					puts("\nPost:\n");
                     printf("\tNome: %s\n", requi.informacao.nome);
-                    printf("\tDiretor: %d\n", requi.informacao.ID);
-                    printf("\tGênero: %d\n", requi.informacao.idade);
-                    printf("\tDuração: %s\n", requi.informacao.tipo);
+                    printf("\tID: %d\n", requi.informacao.ID);
+                    printf("\tIdade: %d\n", requi.informacao.idade);
+                    printf("\tTipo: %s\n", requi.informacao.tipo);
                     break;
 
                 case get:
