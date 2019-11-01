@@ -3,10 +3,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <sys/socket.h> // biblioteca que importa as funções do socket
-#include<arpa/inet.h> //sockaddr_in
+#include <arpa/inet.h> //sockaddr_in
 #include <fcntl.h>
+#include <unistd.h> 
 
 #define post 1
 #define get 2
@@ -42,9 +44,11 @@ int main(){
 	pid_t process_id;
 
 	//FIFO
-	char * myfifo = "/tmp/myfifo"; 
+	
+	char * myfifo = "/tmp/myfifo";
+	remove(myfifo);
 	if(mkfifo(myfifo, 0666) < 0){ //permissão
-		puts("\nErro ao criar o FIFO!\n");
+		perror("\nErro ao criar o FIFO!\n");
 	}
 
     // a função socket() cria uma socket e retorna um descritor que pode ser usado em outras funções.
@@ -78,7 +82,7 @@ int main(){
 
 	while( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) ){
 		// process_id = fork(); //fork é utilizado para lidar com as várias requisições que podem ocorrer ao mesmo tempo
-		
+		printf("\nCONNECTION ACCEPTED\n");
 		if(process_id < 0){
 			perror("Não foi possível estabelecer uma conexão!!");
 			return false;
@@ -88,19 +92,24 @@ int main(){
 			read(fifo, &BD, sizeof(BD));
 
 			if(read(client_sock,&requi,sizeof(requi)) >= 0){
-			printf("\n%d", requi.flag);
-			strcpy(requi.resposta, "deu bom" );
 
 			switch (requi.flag){
                 case post:
+				printf("\nENTROU POST\n");
 					inicializarBD(BD);
 					for(int i=0; i<TAM; i++){
-						if(BD[i].ID != -1){
+						if(BD[i].ID == -1){
+							printf("\nENTROU IF BD\n");
 							strcpy(BD[i].nome , requi.informacao.nome);
 							BD[i].ID = requi.informacao.ID;
 							BD[i].idade = requi.informacao.idade;
 							strcpy(BD[i].tipo , requi.informacao.tipo);
 							animal = BD[i];
+							printf("\nFLAG: %d", requi.flag);
+							printf("\nID: %d", requi.informacao.ID);
+							strcpy(requi.resposta, "deu bom");
+							printf("\nRESPOSTA: %s", requi.resposta);
+							send(client_sock, &requi , sizeof(requi) , 0);
 							break;
 						}
 					}
