@@ -6,7 +6,10 @@
 #include <unistd.h>
 #include <sys/socket.h> // biblioteca que importa as funções do socket
 #include<arpa/inet.h> //sockaddr_in
-//#include <fcntl.h>
+#include <pthread.h>
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <semaphore.h>
 
 #define post 1
 #define get 2

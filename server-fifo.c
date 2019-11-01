@@ -107,9 +107,9 @@ int main(){
                     
 					puts("\nPost:\n");
                     printf("\tNome: %s\n", requi.informacao.nome);
-                    printf("\tDiretor: %d\n", requi.informacao.ID);
-                    printf("\tGênero: %d\n", requi.informacao.idade);
-                    printf("\tDuração: %s\n", requi.informacao.tipo);
+                    printf("\tID: %d\n", requi.informacao.ID);
+                    printf("\tIdade: %d\n", requi.informacao.idade);
+                    printf("\tTipo: %s\n", requi.informacao.tipo);
                     break;
 
                 case get:
