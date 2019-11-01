@@ -103,7 +103,7 @@ int main(){
 							strcpy(BD[i].tipo, requi.informacao.tipo);
 							animal = BD[i];
 							printf("\nFLAG: %d", requi.flag);
-							printf("\nRESPOSTA: %s", requi.resposta);
+							printf("\nID: %d", requi.informacao.ID);
 							strcpy(requi.resposta, "deu bom");
 							printf("\nRESPOSTA: %s", requi.resposta);
 							send(client_sock, &requi , sizeof(requi) , 0);
@@ -122,6 +122,7 @@ int main(){
                     animal = requi.informacao;
                     printf("\nGet\n");
                     printf("\tID: %d\n", requi.informacao.ID);
+					//procurar no bd e retornar a struct com esse id e dar um write
                     break;
                 }
 

@@ -70,11 +70,14 @@ int main()
                 scanf("%s", dados.nome);
                 printf("\nInsira a idade do animal: ");
                 scanf("%d", &dados.idade);
-                dados.ID++;
-                printf("\nID: %d", dados.ID);
+                requi.informacao.ID++;
+                printf("\nID requi: %d", requi.informacao.ID);
+                printf("\nID dados: %d", dados.ID);
                 requi.flag = 1;
                 printf("\nFLAG: %d\n", requi.flag);
-                requi.informacao = dados;
+                strcpy(requi.informacao.nome , dados.nome);
+                requi.informacao.idade = dados.idade;
+                strcpy(requi.informacao.tipo , dados.tipo);
                 printf("\nenviando dados\n");
 
                 if( send(sock, &requi , sizeof(requi) , 0) < 0) //enviar dados pelo socket
