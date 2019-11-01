@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <string.h>
 #include <arpa/inet.h> //makes available the type in_port_t and the type in_addr_t
 #include <sys/types.h>  //contém as definições dos tipos de dados usados nas chamadas de sistema
 #include <sys/socket.h> //contém definições de structs que os sockets precisam --struct sockaddr
@@ -18,7 +17,6 @@ typedef struct{
 }info;
 
 typedef struct{
-    int tipo;
     info informacao;
     int flag;
     char resposta[30];
@@ -72,9 +70,14 @@ int main()
                 scanf("%s", dados.nome);
                 printf("\nInsira a idade do animal: ");
                 scanf("%d", &dados.idade);
-                dados.ID++;
+                requi.informacao.ID++;
+                printf("\nID requi: %d", requi.informacao.ID);
+                printf("\nID dados: %d", dados.ID);
                 requi.flag = 1;
-                requi.informacao = dados;
+                printf("\nFLAG: %d\n", requi.flag);
+                strcpy(requi.informacao.nome , dados.nome);
+                requi.informacao.idade = dados.idade;
+                strcpy(requi.informacao.tipo , dados.tipo);
                 printf("\nenviando dados\n");
 
                 if( send(sock, &requi , sizeof(requi) , 0) < 0) //enviar dados pelo socket
@@ -83,13 +86,12 @@ int main()
                     return 1;
                 }
 
-                m = read(sock, &requi, sizeof(requi)); //ler
-                printf("\n%s", requi.resposta);
-                if (m < 0)
+
+                if ((read(sock, &requi, sizeof(requi))) < 0) //ler dados do socket
                 {
                     printf("\nErro ao ler do socket");
                 }
-
+                printf("\nresposta: %s", requi.resposta);
                 break;
 
             case 2:
@@ -100,20 +102,21 @@ int main()
                 scanf("%d", &dados.idade);
                 dados.ID++;
                 requi.flag = 1;
+                printf("\nFLAG: \n", requi.flag);
                 requi.informacao = dados;
 
-                if( send(sock, &requi.informacao , sizeof(requi.informacao) , 0) < 0) //enviar dados pelo socket
+                if( send(sock, &requi , sizeof(requi) , 0) < 0) //enviar dados pelo socket
                 {
                     perror("\nErro: falha ao enviar dados");
                     return 1;
                 }
 
-                m = read(sock, &requi.informacao, sizeof(requi.informacao)); //ler
                 printf("\n%s", requi.resposta);
-                if (m < 0)
+                if ((read(sock, &requi, sizeof(requi))) < 0) //ler dados do socket
                 {
                     printf("\nErro ao ler do socket");
                 }
+
 
                 break;
             
@@ -127,17 +130,18 @@ int main()
                 requi.flag = 1;
                 requi.informacao = dados;
 
-                if( send(sock, &requi.informacao , sizeof(requi.informacao) , 0) < 0) //enviar dados pelo socket
+                if( send(sock, &requi , sizeof(requi) , 0) < 0) //enviar dados pelo socket
                 {
                     perror("\nErro: falha ao enviar dados");
                     return 1;
                 }
-                m = read(sock, &requi.informacao, sizeof(requi.informacao)); //ler
+
                 printf("\n%s", requi.resposta);
-                if (m < 0)
+                if ((read(sock, &requi, sizeof(requi))) < 0) //ler dados do socket
                 {
                     printf("\nErro ao ler do socket");
                 }
+
 
                 break;
 
@@ -147,67 +151,57 @@ int main()
                 scanf("%d", requi.informacao.ID);
                 requi.flag=2;
 
-                // if( send(sock, &dados.idade , strlen(dados.idade) , 0) < 0) //enviar dados pelo socket
-                // {
-                //     perror("\nErro: falha ao enviar dados");
-                //     return 1;
-                // }
+                if( send(sock, &requi.informacao.ID , sizeof(requi.informacao.ID) , 0) < 0) //enviar dados pelo socket
+                {
+                    perror("\nErro: falha ao enviar dados");
+                    return 1;
+                }
 
+                printf("\n%s", requi.resposta);
+                if ((read(sock, &requi, sizeof(requi))) < 0) //ler dados do socket
+                {
+                    printf("\nErro ao ler do socket");
+                }
 
-                // m = read(sock,dados.nome,1024); //ler
-
-                // if (m < 0)
-                // {
-                //     printf("\nErro ao ler do socket");
-                // }
+                break;
 
             case 5:
                 printf("\nInsira o nome do gato a ser buscado: ");
                 scanf("%s", requi.informacao.ID);
                 requi.flag=2;
 
-                // if( send(sock, &dados.idade , strlen(dados.idade) , 0) < 0) //enviar dados pelo socket
-                // {
-                //     perror("\nErro: falha ao enviar dados");
-                //     return 1;
-                // }
+                if( send(sock, &requi.informacao.ID , sizeof(requi) , 0) < 0) //enviar dados pelo socket
+                {
+                    perror("\nErro: falha ao enviar dados");
+                    return 1;
+                }
 
-                // m = write(sock,dados.nome,strlen(dados.tipo));//escrever
-                // if (m < 0)
-                // {
-                //     printf("\nErro ao escrever no socket");
-                // }
-
-                // m = read(sock,dados.nome,1024); //ler
-
-                // if (m < 0)
-                // {
-                //     printf("\nErro ao ler do socket");
-                // }
+                printf("\n%s", requi.resposta);
+                if ((read(sock, &requi, sizeof(requi))) < 0) //ler dados do socket
+                {
+                    printf("\nErro ao ler do socket");
+                }
+                break;
 
             case 6:
                 printf("\nInsira o nome do passaro a ser buscado: ");
                 scanf("%s", requi.informacao.ID);
                 requi.flag=2;
 
-                // if( send(sock, &dados.idade , strlen(dados.idade) , 0) < 0) //enviar dados pelo socket
-                // {
-                //     perror("\nErro: falha ao enviar dados");
-                //     return 1;
-                // }
+                if( send(sock, &requi.informacao.ID , sizeof(requi) , 0) < 0) //enviar dados pelo socket
+                {
+                    perror("\nErro: falha ao enviar dados");
+                    return 1;
+                }
 
-                // m = write(sock,dados.nome,strlen(dados.tipo));//escrever
-                // if (m < 0)
-                // {
-                //     printf("\nErro ao escrever no socket");
-                // }
+                printf("\n%s", requi.resposta);
+                if ((read(sock, &requi, sizeof(requi))) < 0) //ler dados do socket
+                {
+                    printf("\nErro ao ler do socket");
+                }
 
-                // m = read(sock,dados.nome,1024); //ler
+                break;
 
-                // if (m < 0)
-                // {
-                //     printf("\nErro ao ler do socket");
-                // }
             default:
                 break;
         }
