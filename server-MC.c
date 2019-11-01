@@ -35,6 +35,10 @@ void inicializarBD(info BD[]){
 
 }
 
+#define PSHARED 1
+
+sem_t semaphore;
+
 int main(){
     //criando um socket
     int socket_desc, c,  client_sock, pipe_[2], socket_final;
@@ -70,13 +74,6 @@ int main(){
 	puts("Esperando por conexões de entrada\n");
 	c = sizeof(struct sockaddr_in);
 
-	//pipe
-	if (pipe(pipe_) < 0){ //é usado para passar informações de um processo para outro
-        perror("Falha ao criar o pipe.\n");
-    }
-
-	write(pipe_[1], &BD, sizeof(BD));
-
 	while( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) ){
 		// process_id = fork(); //fork é utilizado para lidar com as várias requisições que podem ocorrer ao mesmo tempo
 		
@@ -97,10 +94,10 @@ int main(){
 					inicializarBD(BD);
 					for(int i=0; i<TAM; i++){
 						if(BD[i].ID != -1){
-							strcpy(BD[requi.informacao.ID].nome , requi.informacao.nome);
-							BD[requi.informacao.ID].ID = requi.informacao.ID;
-							BD[requi.informacao.ID].idade = requi.informacao.idade;
-							strcpy(BD[requi.informacao.ID].tipo , requi.informacao.tipo);
+							strcpy(BD[i].nome , requi.informacao.nome);
+							BD[i].ID = requi.informacao.ID;
+							BD[i].idade = requi.informacao.idade;
+							strcpy(BD[i].tipo , requi.informacao.tipo);
 							animal = BD[i];
 							break;
 						}

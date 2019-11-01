@@ -96,10 +96,10 @@ int main(){
 					inicializarBD(BD);
 					for(int i=0; i<TAM; i++){
 						if(BD[i].ID != -1){
-							strcpy(BD[requi.informacao.ID].nome , requi.informacao.nome);
-							BD[requi.informacao.ID].ID = requi.informacao.ID;
-							BD[requi.informacao.ID].idade = requi.informacao.idade;
-							strcpy(BD[requi.informacao.ID].tipo , requi.informacao.tipo);
+							strcpy(BD[i].nome , requi.informacao.nome);
+							BD[i].ID = requi.informacao.ID;
+							BD[i].idade = requi.informacao.idade;
+							strcpy(BD[i].tipo , requi.informacao.tipo);
 							animal = BD[i];
 							break;
 						}
