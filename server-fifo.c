@@ -81,7 +81,7 @@ int main(){
 	write(fifo, &BD, sizeof(BD));
 
 	while( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) ){
-		// process_id = fork(); //fork é utilizado para lidar com as várias requisições que podem ocorrer ao mesmo tempo
+		process_id = fork(); //fork é utilizado para lidar com as várias requisições que podem ocorrer ao mesmo tempo
 		printf("\nCONNECTION ACCEPTED\n");
 		if(process_id < 0){
 			perror("Não foi possível estabelecer uma conexão!!");

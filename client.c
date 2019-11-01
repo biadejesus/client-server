@@ -148,21 +148,24 @@ int main()
 
             case 4:
                 printf("\nInsira o id do cachorro a ser buscado: ");
-                scanf("%d", requi.informacao.ID);
+                scanf("%d", &requi.informacao.ID);
                 requi.flag=2;
-
-                if( send(sock, &requi.informacao.ID , sizeof(requi.informacao.ID) , 0) < 0) //enviar dados pelo socket
+                printf("\nCOMEÇO");
+                 
+                if( (write(sock, &requi, sizeof(requi))) < 0) //enviar dados pelo socket
                 {
                     perror("\nErro: falha ao enviar dados");
                     return 1;
                 }
 
-                printf("\n%s", requi.resposta);
+                printf("\nFEZ SEND");
                 if ((read(sock, &requi, sizeof(requi))) < 0) //ler dados do socket
                 {
                     printf("\nErro ao ler do socket");
                 }
-
+                printf("\nFEZ READ E SEND");
+                printf("\n%s", requi.resposta);
+                printf("\n%s", requi.informacao.nome);
                 break;
 
             case 5:
