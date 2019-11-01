@@ -10,14 +10,15 @@
 
 typedef struct{
     char tipo[30];
-    int idade;
+    int idade, ID;
     char nome[30];
 }info;
 
 typedef struct{
+    int tipo;
     info informacao;
     int flag;
-	char resposta[30];
+    char resposta[30];
 }requisicao;
 
 int main(){
