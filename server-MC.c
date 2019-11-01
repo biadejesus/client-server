@@ -74,6 +74,33 @@ int main(){
 	puts("Esperando por conexões de entrada\n");
 	c = sizeof(struct sockaddr_in);
 
+
+	//para fazer multiplas conexões
+	key_t key = ftok("shmfile", 65);
+
+    if (key < 0)
+    {
+        perror("Erro ao criar ftok");
+        exit(EXIT_FAILURE);
+    }
+
+    int shmid = shmget(key, TAM*sizeof(info), 0666 | IPC_CREAT);
+
+    if (shmid < 0)
+    {
+        perror("Erro ao criar shmid");
+        exit(EXIT_FAILURE);
+    }
+
+    if (sem_init(&semaphore, PSHARED, 1) < 0) {
+        perror("Erro na inicialização do semáforo!");
+        exit(EXIT_FAILURE);
+    }
+
+    info *MC_animal = (info *)shmat(shmid, NULL, 0);
+
+    memcpy(MC_animal, &BD, sizeof(info));
+
 	while( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) ){
 		// process_id = fork(); //fork é utilizado para lidar com as várias requisições que podem ocorrer ao mesmo tempo
 		
