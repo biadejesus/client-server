@@ -92,10 +92,10 @@ int main(){
 			puts("a conexão foi estabelecida!");
 			read(fifo, &BD, sizeof(BD));
 
-			if(read(client_sock,&requi,sizeof(requi)) >= 0){
+		if(read(client_sock,&requi,sizeof(requi)) >= 0){
 
 			switch (requi.flag){
-                case post:
+				case post:
 				printf("\nENTROU POST\n");
 
 					for(int i=0; i<TAM; i++){
@@ -114,7 +114,7 @@ int main(){
 							break;
 						}
 					}
-                    
+					
 					puts("\nPost:\n");
                     printf("\tNome: %s\n", requi.informacao.nome);
                     printf("\tID: %d\n", requi.informacao.ID);
