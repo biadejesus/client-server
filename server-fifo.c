@@ -19,7 +19,6 @@ typedef struct{
 }info;
 
 typedef struct{
-	int tipo;
     info informacao;
     int flag;
 	char resposta[30];
@@ -92,7 +91,7 @@ int main(){
 			printf("\n%d", requi.flag);
 			strcpy(requi.resposta, "deu bom" );
 
-			switch (requi.tipo){
+			switch (requi.flag){
                 case post:
 					inicializarBD(BD);
 					for(int i=0; i<TAM; i++){

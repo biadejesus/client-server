@@ -19,7 +19,6 @@ typedef struct{
 }info;
 
 typedef struct{
-	int tipo;
     info informacao;
     int flag;
 	char resposta[30];
@@ -90,7 +89,7 @@ int main(){
 			printf("\n%d", requi.flag);
 			strcpy(requi.resposta, "deu bom" );
 
-			switch (requi.tipo){
+			switch (requi.flag){
                 case post:
 					inicializarBD(BD);
 					for(int i=0; i<TAM; i++){
@@ -124,18 +123,10 @@ int main(){
 		}
 		else{
 			perror("Leitura da requisição falhou.\n");
-            // write(socket_final, "REQ_FAILED", 11);
 		}
 	}
 	if(socket_final < 0)
-		puts("\n\nFalha na requisição!\n");
-		
-
-			// if( send(client_sock, &requi , sizeof(requi) , 0) < 0) //enviar dados pelo socket
-			// 		{
-			// 			perror("\nErro: falha ao enviar dados");
-			// 			return true;
-			// 		}
-			// }	
-		return 0;
+		puts("\n\nFalha na requisição!\n");	
+	
+	return 0;
 }
