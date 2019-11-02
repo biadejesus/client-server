@@ -1,31 +1,5 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <sys/socket.h> // biblioteca que importa as funções do socket
-#include <arpa/inet.h> //sockaddr_in
-#include <fcntl.h>
-#include <unistd.h> 
-
-#define post 1
-#define get 2
-#define TAM 100
-
-typedef struct{
-    char tipo[30];
-    int idade, ID;
-    char nome[30];
-}info;
-
-typedef struct{
-    info informacao;
-    int flag;
-	char resposta[30];
-}requisicao;
-
+#include "structs.c"
+#include "includes.h"
 
 void inicializarBD(info BD[]){
 	for(int i =0; i<TAM; i++){
@@ -51,26 +25,8 @@ int main(){
 		perror("\nErro ao criar o FIFO!\n");
 	}
 
-    // a função socket() cria uma socket e retorna um descritor que pode ser usado em outras funções.
-    socket_desc = socket(AF_INET, SOCK_STREAM, 0); //AF_INET( IP versãon 4) = tipo de endereços, SOCK_STREAM = tipo (isso significa protocolo TCP orientado a conexão), Protocolo - 0 [ ou IPPROTO_IP é o IP protocolo]
-    if (socket_desc == -1){
-        printf("Nao foi possivel criar o socket\n");
-    }
-    puts("Socket criado\n");
+    socket_desc = criarSocket(8585);
 
-    //conectando um socket ao server
-    server.sin_addr.s_addr = inet_addr("127.0.0.1"); // pega quaquer porta que está disponível no momento
-	server.sin_family = AF_INET;
-	server.sin_port = htons(8585); // porta aleatória
-
-    if (bind(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0){ // bind coloca o socket no lugar reservado para ele 
-		puts("Erro na conexão!");
-		return 1;
-	}
-	
-	puts("conectado\n");
-
-    //Listen
 	listen(socket_desc , 3); // colocar os sockets em listening mode
 
     //Aceita e conexões de entrada

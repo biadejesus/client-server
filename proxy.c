@@ -1,12 +1,58 @@
-//fazer bind pra descobrir a porta pra mandar pro server e no server recebendo do proxy
-//bind pra saber qual porta vai
-//bind do proxy com cliente e bind de cada server com o proxy
+#include "includes.h"
+#include "structs.c"
+#include "funcoes.c"
 
+#pragma pack(1)
 
+int main(){
+    int sSockt, cSockt;
+    int gatoSockt, cachorroSockt, passaroSockt;
+    int nread, fd;
+    struct sockaddr_in client;
+    int tamClient = sizeof(client);
+    pid_t pid;
+    sSockt = criarSocket(portaCliente);
+    gatoSockt = criarSocket(portaFifo);
+    cachorroSockt = criarSocket(portaMC);
+    passaroSockt = criarSocket(portaPipe);
 
-// if( recv(socket_desc, server_reply , 2000 , 0) < 0)
-// 	{
-// 		puts("recv failed");
-// 	}
-// 	puts("Reply received\n");
-// 	puts(server_reply);
+    while (cSockt = accept(sSockt, (struct sockaddr *)&client, &tamClient)){
+        if (cSockt < 0){
+            perror("Algo deu errado na função accept()\n");
+        }
+        if ((pid = fork()) < 0){
+            perror("Algo deu errado na função fork()\n");
+        }
+        if (pid <= 0){
+            requisicao buffer;
+            while (read(cSockt, &buffer, 76)){
+                requisicao msgServer;
+                int tamServer;
+                if (strcmp(buffer.informacao.tipo, "cachorro") == 0){
+                    printf ("Requisição do tipo cachorro identificada. Enviando para o servidor.\n");
+                    mandarMsg(cachorroSockt, buffer, 76);
+                    tamServer = read(cachorroSockt, &msgServer, 76);
+                }
+                else if (strcmp(buffer.informacao.tipo, "gato") == 0){
+                    printf ("Requisição do tipo gato identificada. Enviando para o servidor.\n");
+                    mandarMsg(gatoSockt, buffer, 76);
+                    tamServer = read(gatoSockt, &msgServer, 76);
+                }
+                else if (strcmp(buffer.informacao.tipo, "passaro") == 0){
+                    printf ("Requisição do tipo pássaro identificada. Enviando para o servidor.\n");
+                    mandarMsg(passaroSockt, buffer, 76);
+                    tamServer = read(gatoSockt, &msgServer, 76);
+                }
+                else{
+                    printf("Erro na requisição (proxy.c)\n");
+                }
+                mandarMsg(cSockt, msgServer, tamServer);
+            }
+            printf ("Encerrando conexão..\n");
+
+        close(cSockt);
+        }
+    }
+    close(sSockt);
+    return 0;
+}
