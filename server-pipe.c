@@ -1,4 +1,4 @@
-#include "funcoes.c"
+#include "socket.h"
 
 void inicializarBD(info BD[]){
 	for(int i =0; i<TAM; i++){
@@ -18,7 +18,7 @@ int main(){
 	pid_t process_id;
 
     // a função socket() cria uma socket e retorna um descritor que pode ser usado em outras funções.
-    socket_desc = criarSocket(8585);
+    socket_desc = criarSocket(portaPipe);
 
     //Listen
 	listen(socket_desc , 3); // colocar os sockets em listening mode

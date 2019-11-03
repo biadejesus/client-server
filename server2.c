@@ -2,17 +2,17 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/socket.h> // biblioteca que importa as funções do socket
-#include<arpa/inet.h> //sockaddr_in
+#include <arpa/inet.h> //sockaddr_in
 //#include <fcntl.h>
 
 #define true 1
 #define false 0
 
 typedef struct{
-    char tipo[30];
+    char tipo[30]; 
     int idade, ID;
     char nome[30];
-}info;
+}info; // 30+30+8+8 = 76 bytes
 
 typedef struct{
     info informacao;

@@ -1,4 +1,4 @@
-#include "funcoes.c"
+#include "socket.h"
 
 int main()
 {
@@ -6,7 +6,7 @@ int main()
     info dados;
     requisicao requi;
 
-    sock = conectarSocket(8585);
+    sock = conectarSocket(portaCliente);
 
     printf("\n-------Sistema de cadastro de animais MiAudota-------\n");
 

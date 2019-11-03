@@ -9,8 +9,10 @@
 #define portaFifo 8685
 #define PSHARED 1
 
-struct sockaddr_in {
-        short   sin_family; /* should be AF_INET */
+#include <arpa/inet.h>
+
+/* struct sockaddr_in {
+        short   sin_family;
         unsigned short sin_port;
         struct  in_addr sin_addr;
         char    sin_zero[8];
@@ -18,8 +20,8 @@ struct sockaddr_in {
 
 struct in_addr {
    unsigned long s_addr;
-};
-
+}
+*/
 typedef struct{
     char tipo[30];
     int idade, ID;
@@ -29,7 +31,7 @@ typedef struct{
 typedef struct{
     info informacao;
     int flag;
-        char resposta[30];
+    char resposta[30];
 }requisicao;
 
 typedef struct

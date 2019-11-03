@@ -1,5 +1,8 @@
-#include "funcoes.c"
-
+#include "socket.h"
+#include <sys/ipc.h>
+#include <sys/shm.h>
+#include <pthread.h>
+#include <semaphore.h>
 
 void inicializarBD(DADOS BD){
 	for(int i =0; i<TAM; i++){
@@ -21,7 +24,7 @@ int main(){
     struct sockaddr_in server, client; // utiliza para conectar a um servidor remoto em um determinado número de porta. Para fazer isso é preciso de uma porta e um endereço de IP.
 	pid_t process_id;
 
-    socket_desc = criarSocket(8585);
+    socket_desc = criarSocket(portaMC);
 
     //Listen
 	listen(socket_desc , 3); // colocar os sockets em listening mode

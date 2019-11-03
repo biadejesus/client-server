@@ -1,5 +1,3 @@
-#include "includes.h"
-#include "structs.c"
 #include "funcoes.c"
 
 #pragma pack(1)
@@ -25,23 +23,23 @@ int main(){
         }
         if (pid <= 0){
             requisicao buffer;
-            while (read(cSockt, &buffer, 76)){
+            while (read(cSockt, &buffer, 114)){
                 requisicao msgServer;
                 int tamServer;
                 if (strcmp(buffer.informacao.tipo, "cachorro") == 0){
                     printf ("Requisição do tipo cachorro identificada. Enviando para o servidor.\n");
-                    mandarMsg(cachorroSockt, buffer, 76);
-                    tamServer = read(cachorroSockt, &msgServer, 76);
+                    mandarMsg(cachorroSockt, buffer, 114);
+                    tamServer = read(cachorroSockt, &msgServer, 114);
                 }
                 else if (strcmp(buffer.informacao.tipo, "gato") == 0){
                     printf ("Requisição do tipo gato identificada. Enviando para o servidor.\n");
-                    mandarMsg(gatoSockt, buffer, 76);
-                    tamServer = read(gatoSockt, &msgServer, 76);
+                    mandarMsg(gatoSockt, buffer, 114);
+                    tamServer = read(gatoSockt, &msgServer, 114);
                 }
                 else if (strcmp(buffer.informacao.tipo, "passaro") == 0){
                     printf ("Requisição do tipo pássaro identificada. Enviando para o servidor.\n");
-                    mandarMsg(passaroSockt, buffer, 76);
-                    tamServer = read(gatoSockt, &msgServer, 76);
+                    mandarMsg(passaroSockt, buffer, 114);
+                    tamServer = read(gatoSockt, &msgServer, 114);
                 }
                 else{
                     printf("Erro na requisição (proxy.c)\n");

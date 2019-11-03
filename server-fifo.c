@@ -1,5 +1,4 @@
-#include "structs.c"
-#include "includes.h"
+#include "socket.h"
 
 void inicializarBD(info BD[]){
 	for(int i =0; i<TAM; i++){
@@ -26,7 +25,7 @@ int main(){
 		perror("\nErro ao criar o FIFO!\n");
 	}
 
-    socket_desc = criarSocket(8585);
+    socket_desc = criarSocket(portaFifo);
 
 	listen(socket_desc , 3); // colocar os sockets em listening mode
 
