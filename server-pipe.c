@@ -12,6 +12,7 @@ int main(){
     int socket_desc, c,  client_sock, pipe_[2], socket_final;
 	requisicao requi;
 	info BD[TAM], animal;
+	inicializarBD(BD);
 
     struct sockaddr_in server, client; // utiliza para conectar a um servidor remoto em um determinado número de porta. Para fazer isso é preciso de uma porta e um endereço de IP.
 	pid_t process_id;
