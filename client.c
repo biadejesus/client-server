@@ -1,5 +1,3 @@
-#include "includes.h"
-#include "structs.c"
 #include "funcoes.c"
 
 int main()
