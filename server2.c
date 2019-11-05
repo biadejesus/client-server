@@ -66,7 +66,7 @@ int main(){
 		}
 		read(client_sock,&requi,sizeof(requi));
 		printf("\n%d", requi.flag);
-		strcpy(requi.resposta, "deu bom" );
+		strcpy(requi.resposta, "Deu bom\n" );
 		if( send(client_sock, &requi , sizeof(requi) , 0) < 0) //enviar dados pelo socket
                 {
                     perror("\nErro: falha ao enviar dados");

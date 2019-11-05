@@ -39,7 +39,6 @@ typedef struct
 	info db[TAM];
 
 }DADOS;
-
 struct  hostent {
         char    *h_name;        /* official name of host */
         char    **h_aliases;    /* alias list */

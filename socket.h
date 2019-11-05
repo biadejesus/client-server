@@ -14,8 +14,8 @@
 #include <stdbool.h>
 #include "structs.c"
 
-int criarSocket(int PORTA){}
-int conectarSocket(int PORTA){}
-void mandarMsg(int sockt, requisicao msg, uint32_t msgsize){}
+int criarSocket(int PORTA);
+int conectarSocket(int PORTA);
+void mandarMsg(int sockt, requisicao *msg, uint32_t msgsize);
 
 #endif

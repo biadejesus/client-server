@@ -1,4 +1,4 @@
-#include "socket.h"
+#include "socket.c"
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <pthread.h>
@@ -18,7 +18,6 @@ int main(){
     int socket_desc, c,  client_sock, pipe_[2], socket_final;
 	requisicao requi;
 	DADOS BD;
-	info animal;
 	inicializarBD(BD);
 
     struct sockaddr_in server, client; // utiliza para conectar a um servidor remoto em um determinado número de porta. Para fazer isso é preciso de uma porta e um endereço de IP.
@@ -79,9 +78,9 @@ int main(){
             sem_post(&semaphore);
 		
 
-			if(read(client_sock,&requi,sizeof(requi)) >= 0){
+			while(read(client_sock,&requi,sizeof(requi)) >= 0){
 			printf("\n%d", requi.flag);
-			strcpy(requi.resposta, "deu bom" );
+			strcpy(requi.resposta, "" );
 
 				switch (requi.flag){
 					case post:
@@ -90,8 +89,8 @@ int main(){
 								strcpy(BD.db[i].nome , requi.informacao.nome);
 								BD.db[i].ID = requi.informacao.ID;
 								BD.db[i].idade = requi.informacao.idade;
+								strcpy(requi.resposta, "Deu bom MC\n");
 								strcpy(BD.db[i].tipo , requi.informacao.tipo);
-								animal = BD.db[i];
 								break;
 							}
 						}
@@ -108,8 +107,7 @@ int main(){
 						printf("\tID: %d\n", requi.informacao.ID);
 						for(int i=0; i<TAM; i++){
 							if(BD.db[i].ID == requi.informacao.ID){
-								animal = BD.db[i];
-								write(client_sock, &animal, sizeof(animal));
+								write(client_sock, &requi, sizeof(requi));
 								break;
 							}
 						}
@@ -117,12 +115,8 @@ int main(){
 						break;
 				}
 
-				write(client_sock, &animal, sizeof(info));
+				write(client_sock, &requi, sizeof(requi));
         }
-
-		else{
-			perror("Leitura da requisição falhou.\n");
-		}
 
 		sem_wait(&semaphore);
         memcpy(MC_animal, &BD, sizeof(DADOS)); //escreve o do banco de dados para a memória compartilhada
