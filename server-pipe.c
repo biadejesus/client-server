@@ -46,8 +46,9 @@ int main(){
 		}
 		else if(process_id == 0){
 			puts("a conexão foi estabelecida!");
-			read(pipe_[0], &BD, sizeof(BD));
 			while(read(client_sock,&requi,sizeof(requi)) >= 0){
+				read(pipe_[0], &BD, sizeof(BD));
+				strcpy(requi.resposta, "Cadastro realizado com sucesso\n");
 				printf("\nENTROU IF");
 				switch (requi.flag){
 					case post:
@@ -58,7 +59,6 @@ int main(){
 								strcpy(BD.db[i].nome , requi.informacao.nome);
 								BD.db[i].ID = requi.informacao.ID;
 								BD.db[i].idade = requi.informacao.idade;
-								strcpy(requi.resposta, "Deu bom Pipe\n");
 								strcpy(BD.db[i].tipo , requi.informacao.tipo);
 								break;
 							}
@@ -86,8 +86,8 @@ int main(){
 					}
 
 					write(socket_final, &requi, sizeof(requi));
-					write(pipe_[1], &BD, sizeof(BD));
 				}
+				write(pipe_[1], &BD, sizeof(BD));
 		}
 	}
 	if(socket_final < 0)

@@ -54,18 +54,18 @@ int main(){
 
 			while(read(client_sock,&requi,sizeof(requi)) >= 0){
 				read(fifo, &BD, sizeof(BD));
-
+				strcpy(requi.resposta, "Cadastro realizado com sucesso\n");
 				switch (requi.flag){
 					case post:
 					printf("\nENTROU POST\n");
+					inicializarBD(BD);
 						for(int i=0; i<TAM; i++){
 							if(BD.db[i].ID == -1){
 								strcpy(BD.db[i].nome , requi.informacao.nome);
 								BD.db[i].ID = requi.informacao.ID;
 								BD.db[i].idade = requi.informacao.idade;
 								strcpy(BD.db[i].tipo , requi.informacao.tipo);
-								strcpy(requi.resposta, "Deu bom fifo\n");
-								mandarMsg(socket_final, &requi , sizeof(requi));
+								//mandarMsg(socket_final, &requi , sizeof(requi));
 								break;
 							}
 						}
@@ -82,7 +82,7 @@ int main(){
 							printf("\tID: %d\n", requi.informacao.ID);
 							for(int i=0; i<TAM; i++){
 								if(BD.db[i].ID == requi.informacao.ID){
-									mandarMsg(socket_final, &requi, sizeof(requi));
+									write(client_sock, &requi, sizeof(requi));
 									break;
 								}
 							}
@@ -90,9 +90,9 @@ int main(){
 							break;
 				}
 
-				mandarMsg(socket_final, &requi, sizeof(requi));
-				write(fifo, &BD, sizeof(BD));
+				write(socket_final, &requi, sizeof(requi));
 			}
+			write(fifo, &BD, sizeof(BD));
 		}
 	}
 	if(socket_final < 0)

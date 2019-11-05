@@ -80,7 +80,7 @@ int main(){
 
 			while(read(client_sock,&requi,sizeof(requi)) >= 0){
 			printf("\n%d", requi.flag);
-			strcpy(requi.resposta, "" );
+			strcpy(requi.resposta, "Cadastro realizado com sucesso\n" );
 
 				switch (requi.flag){
 					case post:
@@ -89,7 +89,6 @@ int main(){
 								strcpy(BD.db[i].nome , requi.informacao.nome);
 								BD.db[i].ID = requi.informacao.ID;
 								BD.db[i].idade = requi.informacao.idade;
-								strcpy(requi.resposta, "Deu bom MC\n");
 								strcpy(BD.db[i].tipo , requi.informacao.tipo);
 								break;
 							}
