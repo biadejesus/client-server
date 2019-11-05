@@ -45,9 +45,9 @@ int main(){
 			return false;
 		}
 		else if(process_id == 0){
+			read(pipe_[0], &BD, sizeof(BD));
 			puts("a conexão foi estabelecida!");
 			while(read(client_sock,&requi,sizeof(requi)) >= 0){
-				read(pipe_[0], &BD, sizeof(BD));
 				strcpy(requi.resposta, "Cadastro realizado com sucesso\n");
 				printf("\nENTROU IF");
 				switch (requi.flag){
