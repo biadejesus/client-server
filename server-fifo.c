@@ -33,16 +33,12 @@ int main(){
 	puts("Esperando por conexões de entrada\n");
 	c = sizeof(struct sockaddr_in);
 
-	fifo = open(myfifo, O_RDWR | O_TRUNC); //ler e escrever
+	fifo = open(myfifo, O_RDWR); //ler e escrever
 	write(fifo, &BD, sizeof(BD));
 
 	while( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) ){
 		//fork é utilizado para lidar com as várias requisições que podem ocorrer ao mesmo tempo
 		printf("\nCONNECTION ACCEPTED\n");
-		if(client_sock < 0){
-			perror("Não foi possível estabelecer uma conexão!!\n");
-			continue;
-		}
 		process_id = fork();
 
 		if (process_id < 0){
